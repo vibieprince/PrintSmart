@@ -1,11 +1,11 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-  apiKey: "AIzaSyAkgiMl_OHK0mdGKFLkrygJeCTXfDvsQMk",
-  authDomain: "print-smart-b77d2.firebaseapp.com",
-  databaseURL: "https://print-smart-b77d2-default-rtdb.firebaseio.com",
-  projectId: "print-smart-b77d2",
-  storageBucket: "print-smart-b77d2.firebasestorage.app",
-  messagingSenderId: "807594438429",
-  appId: "1:807594438429:web:1cec383936b860be0b3bf4",
-  measurementId: "G-D4LQ794BV0"
+  apiKey: "AIzaSyBq9io3x4gJNva_sqNjEDvoAXIFOX_-o94",
+  authDomain: "print-smart-94a3a.firebaseapp.com",
+  databaseURL: "https://print-smart-94a3a-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "print-smart-94a3a",
+  storageBucket: "print-smart-94a3a.appspot.com",
+  messagingSenderId: "767378936239",
+  appId: "1:767378936239:web:88cce1882ab5a1753c1f5a",
+  measurementId: "G-B51B3JZ11T"
 };
+
