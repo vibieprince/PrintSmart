@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrintSmart Admin Panel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Admin Panel - Print Orders</h1>
+  <div id="orders"></div>
+
+  <!-- Modular Firebase SDK (v9+) using type="module" -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    // ✅ Your actual Firebase config (keep this)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkgiMl_OHK0mdGKFLkrygJeCTXfDvsQMk",
+      authDomain: "print-smart-b77d2.firebaseapp.com",
+      databaseURL: "https://print-smart-b77d2-default-rtdb.firebaseio.com",
+      projectId: "print-smart-b77d2",
+      storageBucket: "print-smart-b77d2.appspot.com",
+      messagingSenderId: "807594438429",
+      appId: "1:807594438429:web:1cec383936b860be0b3bf4",
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ✅ Display orders
+    const ordersDiv = document.getElementById("orders");
+
+    onValue(ref(db, "orders"), (snapshot) => {
+      ordersDiv.innerHTML = "";
+      snapshot.forEach((childSnapshot) => {
+        const data = childSnapshot.val();
+        const order = document.createElement("div");
+        order.className = "order";
+        order.innerHTML = `
+          <p><strong>Name:</strong> ${data.name}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Phone:</strong> ${data.phone}</p>
+          <p><strong>Type:</strong> ${data.printType}</p>
+          <p><strong>Size:</strong> ${data.printSize}</p>
+          <p><strong>Copies:</strong> ${data.copies}</p>
+          <a href="${data.fileURL}" target="_blank">Download File</a>
+          <hr/>
+        `;
+        ordersDiv.appendChild(order);
+      });
+    });
+  </script>
+</body>
+</html>

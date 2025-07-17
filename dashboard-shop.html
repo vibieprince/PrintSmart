@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shop Admin - PrintSmart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <button onclick="logout()" style="position:absolute; top:10px; right:10px;">Logout</button>
+    <script>
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+    </script>
+
+  <h2>Welcome, <span id="shopName"></span></h2>
+  <h3>Your Print Orders</h3>
+  <div id="orders"></div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

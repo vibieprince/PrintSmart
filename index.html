@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PrintSmart - Student Form</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button onclick="logout()" style="position:absolute; top:10px; right:10px;">Logout</button>
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <h2>Place Your Print Order</h2>
+  <form id="orderForm">
+    <p><strong>Sending to:</strong> <span id="shopDisplay"></span></p>
+    <input type="text" id="name" placeholder="Your Name" required />
+    <input type="tel" id="phone" placeholder="Your Phone" required />
+    <select id="printType" required>
+      <option value="bw">Black & White</option>
+      <option value="color">Color</option>
+    </select>
+    <select id="printSize" required>
+      <option value="A4">A4</option>
+      <option value="A3">A3</option>
+    </select>
+    <input type="number" id="copies" placeholder="Number of Copies" required />
+    <input type="url" id="fileURL" placeholder="Paste download link (Google Drive, File.io)" required />
+    <button type="submit">Submit Order</button>
+  </form>
+  <button style="margin-top: 20px;" onclick="window.location.href='track.html'">Track My Order</button>
+  <script type="module" src="student.js"></script>
+</body>
+</html>
