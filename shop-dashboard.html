@@ -27,13 +27,34 @@
   </header>
 
   <main class="p-8 max-w-4xl mx-auto">
-    <h2 class="text-xl font-semibold mb-4">Welcome, <span id="shopName"></span> 👋</h2>
+    <h2 class="text-xl font-semibold mb-4">
+      Welcome, <span id="shopName"></span> 👋
+      <span id="pendingCount" class="ml-2 bg-red-600 text-white px-2 py-1 rounded text-xs hidden"></span>
+    </h2>
     <p class="mb-4 text-gray-300">Below are the incoming print requests from students. You can mark them as printed when done.</p>
+
+    <!-- 🔄 Manual refresh -->
+    <button onclick="location.reload()" class="text-sm bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded mb-4">🔄 Refresh</button>
+
+    <!-- Legend -->
+    <div class="mb-6 text-sm text-gray-400 flex items-center gap-4">
+      <div class="flex items-center gap-1">
+        <span class="inline-block w-3 h-3 rounded-full bg-red-400"></span> New Order
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="inline-block w-3 h-3 rounded-full bg-green-500"></span> Printed
+      </div>
+    </div>
 
     <div id="ordersContainer" class="space-y-6">
       <!-- Orders will be dynamically loaded here -->
     </div>
   </main>
+
+  <!-- ✅ Toast Notification -->
+  <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden transition-opacity duration-300 z-50">
+    ✅ Order marked as printed!
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
@@ -64,6 +85,7 @@
 
     const ordersRef = ref(db, `orders/${shopUID}`);
     const ordersContainer = document.getElementById("ordersContainer");
+    const pendingCountElem = document.getElementById("pendingCount");
 
     onValue(ordersRef, (snapshot) => {
       ordersContainer.innerHTML = "";
@@ -74,29 +96,65 @@
       }
 
       const orders = snapshot.val();
-      const sortedKeys = Object.keys(orders).sort((a, b) => orders[a].timestamp - orders[b].timestamp);
+      let pendingCount = 0;
+
+      const sortedKeys = Object.keys(orders).sort((a, b) => {
+        const orderA = orders[a];
+        const orderB = orders[b];
+
+        // Priority: pending before printed
+        if (orderA.status === "pending" && orderB.status === "printed") return -1;
+        if (orderA.status === "printed" && orderB.status === "pending") return 1;
+
+        // Same status: sort by timestamp
+        return orderA.timestamp - orderB.timestamp;
+      });
 
       for (const key of sortedKeys) {
         const order = orders[key];
 
         const div = document.createElement("div");
-        div.className = "bg-white bg-opacity-10 p-4 rounded mb-3";
+
+        // 🌈 Color based on status
+        if (order.status === "printed") {
+          div.className = "bg-green-200 bg-opacity-20 p-4 rounded mb-3";
+        } else {
+          div.className = "bg-red-100 bg-opacity-20 p-4 rounded mb-3";
+          pendingCount++;
+        }
+
         div.innerHTML = `
           <p><strong>Name:</strong> ${order.studentName}</p>
           <p><strong>Email:</strong> ${order.email}</p>
           <p><strong>Mobile:</strong> ${order.mobile}</p>
           <p><strong>Status:</strong> ${order.status}</p>
           <a href="${order.fileURL}" target="_blank" class="text-blue-300 underline">View Document</a>
-          <button onclick="markPrinted('${key}')" class="mt-2 bg-green-600 hover:bg-green-700 px-4 py-1 rounded text-white text-sm">Mark Printed</button>
+          ${
+            order.status === "pending"
+              ? `<button onclick="markPrinted('${key}')" class="mt-2 bg-green-600 hover:bg-green-700 px-4 py-1 rounded text-white text-sm">Mark Printed</button>`
+              : ""
+          }
         `;
         ordersContainer.appendChild(div);
+      }
+
+      // Show or hide pending badge
+      if (pendingCount > 0) {
+        pendingCountElem.textContent = `${pendingCount} new`;
+        pendingCountElem.classList.remove("hidden");
+      } else {
+        pendingCountElem.classList.add("hidden");
       }
     });
 
     window.markPrinted = async (orderId) => {
       const statusRef = ref(db, `orders/${shopUID}/${orderId}/status`);
       await set(statusRef, "printed");
-      alert("Marked as printed");
+
+      // ✅ Show toast
+      const toast = document.getElementById("toast");
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 3000);
     };
 
     window.logout = () => {

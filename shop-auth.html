@@ -128,9 +128,8 @@
         localStorage.setItem("email", email);
         localStorage.setItem("shopName", shopData.shopName);
         localStorage.setItem("mobile", shopData.mobile);
-        localStorage.setItem("shopUID", uid); // Add this line in LOGIN
+        localStorage.setItem("shopUID", uid);
 
-        // ✅ Redirect to shop dashboard
         window.location.href = "shop-dashboard.html";
       } else {
         alert("Shop data not found. Please contact support.");
@@ -158,22 +157,23 @@
         shopName,
         email,
         mobile,
-        city    // ✅ Added city here
+        city
       });
 
-      alert("Signup successful! Redirecting...");
+      // ✅ Fix: Store shopUID in localStorage during signup
       localStorage.setItem("role", "shopOwner");
       localStorage.setItem("email", email);
       localStorage.setItem("shopName", shopName);
       localStorage.setItem("mobile", mobile);
-      localStorage.setItem("city", city); // Optional if needed
+      localStorage.setItem("city", city);
+      localStorage.setItem("shopUID", uid);
 
+      alert("Signup successful! Redirecting...");
       window.location.href = "shop-dashboard.html";
     } catch (error) {
       alert("Signup failed: " + error.message);
     }
   });
-
 
   window.switchTab = function (tab) {
     const loginForm = document.getElementById("loginForm");

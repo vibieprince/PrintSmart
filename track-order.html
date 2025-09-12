@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Track Order - PrintSmart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .gradient-bg {
+      background-color: #2d3436;
+      background-image: linear-gradient(315deg, #2d3436 0%, #000000 74%);
+    }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+  <div class="container mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold mb-6">📦 Track Your Print Order</h1>
+    <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+      <p class="mb-2"><strong>Shop Name:</strong> <span id="shopName"></span></p>
+      <p class="mb-2"><strong>Shop City:</strong> <span id="shopCity"></span></p>
+      <p class="mb-2"><strong>Shop Mobile:</strong> <span id="shopMobile"></span></p>
+      <p class="mb-2"><strong>File:</strong> <a href="#" id="fileLink" class="text-blue-300 underline" target="_blank">View</a></p>
+      <p class="mb-2"><strong>Status:</strong> 
+        <span id="status" class="font-semibold"></span>
+      </p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq9io3x4gJNva_sqNjEDvoAXIFOX_-o94",
+      authDomain: "print-smart-94a3a.firebaseapp.com",
+      databaseURL: "https://print-smart-94a3a-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "print-smart-94a3a",
+      storageBucket: "print-smart-94a3a.appspot.com",
+      messagingSenderId: "767378936239",
+      appId: "1:767378936239:web:88cce1882ab5a1753c1f5a",
+      measurementId: "G-B51B3JZ11T"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ❌ WRONG
+    // const shopUID = localStorage.getItem("latestShopUID");
+    // const orderID = localStorage.getItem("latestOrderID");
+
+    // ✅ CORRECT
+    const shopUID = localStorage.getItem("selectedShopUID");
+    const orderID = localStorage.getItem("orderId");
+
+
+    const orderRef = ref(db, `orders/${shopUID}/${orderID}`);
+    const shopRef = ref(db, `shopOwners/${shopUID}`);
+
+    let lastKnownStatus = "";
+
+    // 🔁 Fetch shop info once
+    onValue(shopRef, (shopSnap) => {
+      if (shopSnap.exists()) {
+        const shop = shopSnap.val();
+        document.getElementById("shopName").textContent = shop.shopName;
+        document.getElementById("shopCity").textContent = shop.city;
+        document.getElementById("shopMobile").textContent = shop.mobile;
+      }
+    });
+
+    // 🔁 Track order live
+    onValue(orderRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        alert("Order not found!");
+        return;
+      }
+
+      const order = snapshot.val();
+      document.getElementById("fileLink").href = order.fileURL;
+
+      const statusSpan = document.getElementById("status");
+      statusSpan.textContent = order.status;
+
+      // 🎨 Color the status
+      if (order.status === "printed") {
+        statusSpan.classList.add("text-green-400");
+        statusSpan.classList.remove("text-red-400");
+      } else {
+        statusSpan.classList.add("text-red-400");
+        statusSpan.classList.remove("text-green-400");
+      }
+
+      // 📢 Popup on status change
+      if (lastKnownStatus && lastKnownStatus !== order.status && order.status === "printed") {
+        alert("✅ Your order has been marked as printed!");
+      }
+
+      lastKnownStatus = order.status;
+    });
+  </script>
+</body>
+</html>

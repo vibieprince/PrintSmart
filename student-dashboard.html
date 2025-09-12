@@ -139,6 +139,8 @@
       const cloudData = await cloudRes.json();
       const fileURL = cloudData.secure_url;
 
+      const orderID = Date.now(); // Unique order ID
+
       // 💾 Save order in Firebase DB
       const orderData = {
         studentName,
@@ -146,19 +148,26 @@
         mobile,
         fileURL,
         status: "pending",
-        timestamp: Date.now()
+        timestamp: orderID
       };
 
-      const newOrderRef = ref(db, `orders/${selectedShopUID}/${Date.now()}`);
+      const newOrderRef = ref(db, `orders/${selectedShopUID}/${orderID}`);
       await set(newOrderRef, orderData);
 
-      document.getElementById("orderStatus").textContent = "Your order has been placed and is pending.";
-      alert("Order placed successfully!");
-      document.getElementById("orderForm").reset();
+      // ✅ Store info for track-order.html
+      localStorage.setItem("latestOrderID", orderID);
+      localStorage.setItem("latestShopUID", selectedShopUID);
+
+      localStorage.setItem("latestShopName", shopSelect.options[shopSelect.selectedIndex].text);
+
+      // 🔁 Redirect to tracking page
+      window.location.href = "track-order.html";
+
     } catch (error) {
       alert("Upload failed: " + error.message);
     }
   });
+
 
   // Logout
   function logout() {
@@ -166,7 +175,5 @@
     window.location.href = "index.html";
   }
 </script>
-
 </body>
 </html>
-
