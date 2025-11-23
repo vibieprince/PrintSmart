@@ -1,344 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Smart - College Print Order & Pick-Up System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom gradient background */
-        .gradient-bg {
-            background-color: #2d3436;
-            background-image: linear-gradient(315deg, #2d3436 0%, #000000 74%);
-        }
-        
-        /* Smooth transitions */
-        .transition-all {
-            transition: all 0.3s ease;
-        }
-        
-        /* Backdrop blur effect */
-        .backdrop-blur {
-            backdrop-filter: blur(8px);
-        }
-        
-        /* Custom hover effects */
-        .card-hover:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .nav-link:hover {
-            color: #d1d5db;
-        }
-        
-        .btn-blue {
-            background-color: #2563eb;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn-blue:hover {
-            background-color: #1d4ed8;
-        }
-        
-        .btn-green {
-            background-color: #16a34a;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn-green:hover {
-            background-color: #15803d;
-        }
-        
-        .btn-outline {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background-color: transparent;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn-outline:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Mobile menu */
-        .mobile-menu {
-            display: none;
-        }
-        
-        .mobile-menu.active {
-            display: block;
-        }
-    </style>
-</head>
-<body class="gradient-bg min-h-screen">
-    <!-- Header -->
-    <header class="container mx-auto px-4 py-6">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <!-- Printer Icon SVG -->
-                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                </svg>
-                <h1 class="text-2xl font-bold text-white">Print Smart</h1>
-            </div>
-            <nav class="hidden md:flex gap-6">
-                <a href="#features" class="text-white nav-link transition-all">Features</a>
-                <a href="#how-it-works" class="text-white nav-link transition-all">How It Works</a>
-                <a href="#contact" class="text-white nav-link transition-all">Contact</a>
-            </nav>
-            <!-- Mobile menu button -->
-            <button class="md:hidden text-white" onclick="toggleMobileMenu()">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </div>
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="mobile-menu mt-4 md:hidden">
-            <nav class="flex flex-col gap-4">
-                <a href="#features" class="text-white nav-link transition-all">Features</a>
-                <a href="#how-it-works" class="text-white nav-link transition-all">How It Works</a>
-                <a href="#contact" class="text-white nav-link transition-all">Contact</a>
-            </nav>
-        </div>
-    </header>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrintSmart Student Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link rel="stylesheet" href="shared/styles.css" />
 
-    <!-- Hero Section -->
-    <section class="container mx-auto px-4 py-12 text-center">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold text-white mb-6">
-                College Print Order &amp; Pick-Up System
-            </h2>
-            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Streamline your college printing experience. Students can order prints online, 
-                and shop owners can manage orders efficiently.
-            </p>
-            <!-- User Type Selection -->
-            <div class="max-w-md mx-auto mt-12">
-                <div class="bg-green-600 bg-opacity-10 backdrop-blur border border-white border-opacity-20 rounded-xl p-8">
-                    <h3 class="text-white text-2xl font-semibold mb-6">Login / Signup</h3>
-                    <p class="text-gray-300 mb-8">Choose your account type to get started</p>
-                    
-                    <div class="flex gap-4">
-                        <!-- Student Button -->
-                        <button 
-                            class="w-1/2 btn-blue text-white py-4 px-6 rounded-lg font-medium flex items-center justify-center gap-3"
-                            onclick="redirectTo('student-auth.html')"
-                        >
-                            <!-- User Icon SVG -->
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            Student
-                        </button>
-                        
-                        <!-- Shop Owner Button -->
-                        <button 
-                            class="w-1/2 btn-green text-white py-4 px-6 rounded-md font-medium flex items-center justify-center gap-3"
-                            onclick="redirectTo('shop-auth.html')"
-                        >
-                            <!-- Store Icon SVG -->
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                            Shop Owner
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="container mx-auto px-4 py-16">
-        <div class="max-w-4xl mx-auto">
-            <h3 class="text-3xl font-bold text-white text-center mb-12">
-                Why Choose Print Smart?
-            </h3>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <!-- Clock Icon SVG -->
-                    <svg class="h-12 w-12 text-blue-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <h4 class="text-xl font-semibold text-white mb-2">Fast &amp; Convenient</h4>
-                    <p class="text-gray-300">
-                        Order prints online and pick them up when ready. No more waiting in lines.
-                    </p>
-                </div>
-                <div class="text-center">
-                    <!-- Shield Icon SVG -->
-                    <svg class="h-12 w-12 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                    <h4 class="text-xl font-semibold text-white mb-2">Secure &amp; Reliable</h4>
-                    <p class="text-gray-300">
-                        Your documents are handled securely with encrypted file transfers.
-                    </p>
-                </div>
-                <div class="text-center">
-                    <!-- Users Icon SVG -->
-                    <svg class="h-12 w-12 text-purple-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                    </svg>
-                    <h4 class="text-xl font-semibold text-white mb-2">Easy to Use</h4>
-                    <p class="text-gray-300">
-                        Simple interface designed for students and shop owners alike.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="container mx-auto px-4 py-16">
-        <div class="max-w-4xl mx-auto">
-            <h3 class="text-3xl font-bold text-white text-center mb-12">
-                How It Works
-            </h3>
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h4 class="text-2xl font-semibold text-white mb-6">For Students</h4>
-                    <div class="space-y-4">
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                            <div>
-                                <h5 class="font-semibold text-white">Upload Files</h5>
-                                <p class="text-gray-300">Upload your documents and specify print requirements</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                            <div>
-                                <h5 class="font-semibold text-white">Choose Shop</h5>
-                                <p class="text-gray-300">Select from available campus print shops</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
-                            <div>
-                                <h5 class="font-semibold text-white">Pick Up</h5>
-                                <p class="text-gray-300">Get notified when ready and pick up your prints</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-2xl font-semibold text-white mb-6">For Shop Owners</h4>
-                    <div class="space-y-4">
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                            <div>
-                                <h5 class="font-semibold text-white">Receive Orders</h5>
-                                <p class="text-gray-300">Get print orders directly to your dashboard</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                            <div>
-                                <h5 class="font-semibold text-white">Process &amp; Print</h5>
-                                <p class="text-gray-300">Review requirements and print documents</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
-                            <div>
-                                <h5 class="font-semibold text-white">Notify Customer</h5>
-                                <p class="text-gray-300">Mark orders as ready for pickup</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="bg-black bg-opacity-30 backdrop-blur border-t border-white border-opacity-10">
-        <div class="container mx-auto px-4 py-8">
-            <div class="text-center">
-                <div class="flex items-center justify-center gap-2 mb-4">
-                    <!-- Printer Icon SVG -->
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                    </svg>
-                    <span class="text-white font-semibold">Print Smart</span>
-                </div>
-                <p class="text-gray-400 mb-4">
-                    Revolutionizing college printing, one order at a time.
-                </p>
-                <div class="flex justify-center gap-6 text-sm text-gray-400">
-                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
-                    <a href="#" class="hover:text-white transition-colors">Contact Us</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('active');
-        }
-
-        // Redirect function for buttons
-        function redirectTo(path) {
-            // In a real application, you would implement proper routing
-            // For now, we'll just show an alert with the intended destination
-            alert(`Redirecting to: ${path}`);
-            
-            // Uncomment the line below for actual redirection
-            // window.location.href = path;
-        }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-                
-                // Close mobile menu if open
-                const mobileMenu = document.getElementById('mobile-menu');
-                mobileMenu.classList.remove('active');
-            });
-        });
-
-        // Add some interactive effects
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add fade-in animation for sections
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            // Observe all sections
-            document.querySelectorAll('section').forEach(section => {
-                section.style.opacity = '0';
-                section.style.transform = 'translateY(20px)';
-                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(section);
-            });
-        });
-    </script>
-    <script>
-    function redirectTo(path) {
-        window.location.href = path;
+  <style>
+    /* ====== BRAND + THEME ====== */
+    body {
+      background:
+        radial-gradient(circle at top left, #1e1b4b 0%, #020617 35%, #000000 100%),
+        linear-gradient(180deg, #312e81 0%, #020617 50%, #000000 100%);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: cover;
     }
-    </script>
+
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(99, 102, 241, 0.22);
+    }
+
+    .glow-btn {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      box-shadow: 0 0 0 transparent;
+      transition: all 0.25s ease;
+    }
+
+    .glow-btn:hover {
+      box-shadow: 0 0 24px rgba(99, 102, 241, 0.6);
+      transform: translateY(-1.5px);
+    }
+
+    .feature-card {
+      transform: translateY(0);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+      border-radius: 1rem;
+      border: 1px solid rgba(30, 64, 175, 0.4);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      border-color: rgba(129, 140, 248, 0.8);
+    }
+
+    /* ====== SCROLL REVEAL ANIMATIONS ====== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Slight stagger (we'll use data-delay attribute) */
+    .reveal[data-delay="1"] {
+      transition-delay: 0.08s;
+    }
+    .reveal[data-delay="2"] {
+      transition-delay: 0.16s;
+    }
+    .reveal[data-delay="3"] {
+      transition-delay: 0.24s;
+    }
+    .reveal[data-delay="4"] {
+      transition-delay: 0.32s;
+    }
+
+    /* ====== STEP FLOW PROGRESS LINE ====== */
+    .steps-wrapper {
+      position: relative;
+    }
+
+    .steps-line {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .steps-line {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        right: 10%;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          rgba(79, 70, 229, 0.1),
+          rgba(129, 140, 248, 0.8),
+          rgba(79, 70, 229, 0.1)
+        );
+        background-size: 200% 100%;
+        animation: flow 5s linear infinite;
+        transform: translateY(-50%);
+        z-index: 0;
+      }
+    }
+
+    @keyframes flow {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    .step-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 0, #eef2ff, #4f46e5);
+      box-shadow: 0 0 20px rgba(129, 140, 248, 0.6);
+      color: #020617;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin: 0 auto 0.75rem auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* PAGE INTRO ANIMATION */
+
+    /* ====== MOBILE FOCUS ====== */
+    /* Make tap targets comfy and layout breathe on small screens */
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2.2rem;
+        line-height: 1.2;
+      }
+
+      .hero-buttons {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 bg-black">
+  <!-- NAVBAR (Student-only) -->
+  <nav
+    class="border-b border-indigo-900/40 sticky top-0 z-40 bg-black/80 backdrop-blur"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3">
+          <!-- Simple SVG logo -->
+          <div
+            class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-indigo-500 via-violet-500 to-sky-400 shadow-lg"
+          >
+            <span class="font-black text-sm tracking-tighter">PS</span>
+          </div>
+          <div class="flex flex-col leading-tight">
+            <span class="text-xl font-bold tracking-wide">PrintSmart</span>
+            <span class="text-[11px] uppercase text-slate-400 tracking-[0.18em]"
+              >Student Portal</span
+            >
+          </div>
+        </div>
+
+        <!-- Right side: Login -->
+        <div class="flex items-center gap-3">
+          <a
+            href="students/index.html"
+            class="glow-btn px-4 sm:px-5 py-2 rounded-xl font-semibold text-sm sm:text-[15px] flex items-center gap-2"
+          >
+            <i class="fas fa-right-to-bracket text-xs"></i>
+            <span>Login</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="py-16 sm:py-20 px-4">
+    <div
+      class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-center"
+    >
+      <!-- Text -->
+
+      <div class="space-y-5 md:space-y-7 reveal text-center md:text-left">
+        <p class="text-indigo-300 text-xs font-semibold tracking-[0.25em]">
+          CAMPUS PRINTING, REDEFINED
+        </p>
+
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+          Smart Print Order
+          <span class="block text-indigo-400">& Pick-Up System</span>
+        </h1>
+
+
+        <p class="text-base sm:text-lg text-slate-300 max-w-xl">
+          Upload documents from anywhere, choose a campus print shop, pay online
+          and get a pickup token with a precise time slot. Skip queues, pick up
+          your prints in seconds.
+        </p>
+
+        <div
+          class="hero-buttons flex flex-row justify-center md:justify-start gap-3 sm:gap-4 max-w-md mx-auto md:mx-0"
+        >
+
+          <a href="students/index.html"
+            class="glow-btn text-sm sm:text-lg py-2.5 sm:py-3 px-5 sm:px-8 rounded-xl font-semibold text-center">
+            Order Now
+          </a>
+
+          <a href="students/signup.html"
+            class="border border-indigo-500 text-indigo-400 hover:bg-indigo-500 hover:text-white transition py-2.5 sm:py-3 px-5 sm:px-8 rounded-xl font-semibold text-center text-sm sm:text-lg">
+            Create Account
+          </a>
+
+        </div>
+
+        <!-- Mobile Trust Badge -->
+        <div class="sm:hidden flex justify-center mt-4">
+          <div class="flex items-center gap-2 bg-black/70 backdrop-blur px-4 py-2 rounded-full border border-indigo-500/40 shadow-md">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs text-slate-300 font-medium">
+              Leave the Queue hassle
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG Illustration -->
+      <div
+        class="reveal"
+        data-delay="2"
+      >
+        <div
+          class="glass-card rounded-3xl p-5 sm:p-6 md:p-7 shadow-xl max-w-md mx-auto"
+        >
+          <img src="assets/ChatGPT Image Nov 22, 2025, 12_21_42 PM.png"
+          class="rounded-xl w-full max-w-xs sm:max-w-md mx-auto"
+          alt="">
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- HOW IT WORKS (Step progress with animation) -->
+  <section class="py-16 sm:py-20 px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-10 reveal">
+        How PrintSmart Works
+      </h2>
+
+      <div class="steps-wrapper mt-8">
+        <!-- animated line behind steps (desktop only) -->
+        <div class="steps-line" data-delay="2"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-7 sm:gap-10">
+          <!-- Step 1 -->
+          <div class="reveal" data-delay="5">
+            <div class="step-dot">1</div>
+            <div class="glass-card feature-card p-5 sm:p-6">
+              <i class="fas fa-upload text-indigo-400 text-2xl mb-3"></i>
+              <h3 class="text-lg font-bold mb-1">Upload File</h3>
+              <p class="text-slate-400 text-sm">
+                Select your document directly from your phone or laptop.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="reveal" data-delay="2">
+            <div class="step-dot">2</div>
+            <div class="glass-card feature-card p-5 sm:p-6">
+              <i class="fas fa-sliders-h text-indigo-400 text-2xl mb-3"></i>
+              <h3 class="text-lg font-bold mb-1">Set Print Options</h3>
+              <p class="text-slate-400 text-sm">
+                Choose pages, copies, color/BW and sides in a few taps.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="reveal" data-delay="3">
+            <div class="step-dot">3</div>
+            <div class="glass-card feature-card p-5 sm:p-6">
+              <i class="fas fa-credit-card text-indigo-400 text-2xl mb-3"></i>
+              <h3 class="text-lg font-bold mb-1">Pay & Get Token</h3>
+              <p class="text-slate-400 text-sm">
+                Pay online securely and receive your unique token & pickup time.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="reveal" data-delay="4">
+            <div class="step-dot">4</div>
+            <div class="glass-card feature-card p-5 sm:p-6">
+              <i class="fas fa-store text-indigo-400 text-2xl mb-3"></i>
+              <h3 class="text-lg font-bold mb-1">Pickup & Go</h3>
+              <p class="text-slate-400 text-sm">
+                Show your token at the shop, collect prints, and you’re done.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY STUDENTS LOVE SECTION -->
+  <section class="py-16 sm:py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12 reveal">
+        Built For Busy Students
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-7 sm:gap-8">
+        <div class="glass-card feature-card p-6 reveal" data-delay="1">
+          <i class="fas fa-bolt text-indigo-400 text-2xl mb-4"></i>
+          <h3 class="font-bold mb-1">Fast & Queue-Free</h3>
+          <p class="text-slate-400 text-sm">
+            Order in advance and walk in only when your prints are ready.
+          </p>
+        </div>
+
+        <div class="glass-card feature-card p-6 reveal" data-delay="2">
+          <i class="fas fa-clock text-indigo-400 text-2xl mb-4"></i>
+          <h3 class="font-bold mb-1">Perfect Timing</h3>
+          <p class="text-slate-400 text-sm">
+            Plan your pickup between lectures with accurate time slots.
+          </p>
+        </div>
+
+        <div class="glass-card feature-card p-6 reveal" data-delay="3">
+          <i class="fas fa-shield-alt text-indigo-400 text-2xl mb-4"></i>
+          <h3 class="font-bold mb-1">Secure Documents</h3>
+          <p class="text-slate-400 text-sm">
+            Your files are handled securely and only by authorized print shops.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section
+    class="py-16 sm:py-20 text-center bg-gradient-to-r from-indigo-600 via-violet-700 to-indigo-800"
+  >
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-5">
+        Start Printing Smarter Today
+      </h2>
+      <p class="text-indigo-100 mb-8 text-sm sm:text-base">
+        Join your campus print network and turn every print into a
+        queue-free experience.
+      </p>
+      <a
+        href="signup.html"
+        class="bg-white text-indigo-700 font-semibold text-base sm:text-lg px-10 py-3.5 rounded-full shadow-xl hover:scale-105 transition inline-flex items-center gap-2 justify-center"
+      >
+        <i class="fas fa-user-plus text-sm"></i>
+        <span>Create Your Student Account</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-black border-t border-indigo-900/30 py-8">
+    <div class="max-w-6xl mx-auto text-center space-y-3 px-4">
+      <p class="text-slate-400 text-sm">
+        © 2025 PrintSmart · Student Print Order & Pick-Up System
+      </p>
+      <p class="text-slate-600 text-xs">
+        Designed mobile-first for campus life • Best viewed on your phone
+      </p>
+    </div>
+  </footer>
+
+    <!-- MOBILE FLOATING CTA BAR -->
+  <div class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/90 backdrop-blur border-t border-indigo-600/30 px-4 py-3 flex justify-between items-center">
+    <span class="text-sm text-slate-300 font-medium">Ready to print?</span>
+
+    <a href="students/index.html"
+      class="glow-btn text-sm px-5 py-2 rounded-full font-semibold shadow-lg">
+      Order Now
+    </a>
+  </div>
+
+  <!-- SCROLL ANIMATION SCRIPT -->
+  <script>
+    // Simple IntersectionObserver to reveal elements on scroll
+    const revealEls = document.querySelectorAll(".reveal");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.12,
+      }
+    );
+
+    revealEls.forEach((el) => observer.observe(el));
+  </script>
 
 </body>
 </html>

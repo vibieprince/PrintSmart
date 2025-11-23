@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing - PrintSmart</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<style>
+body {
+  background: linear-gradient(to bottom, #1e1b4b 0%, #020617 40%, #000000 100%);
+  background-attachment: fixed;
+}
+.glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+.btn-phonepe { background: #5f259f; }
+.btn-paytm { background: #00baf2; }
+.btn-gpay { background: #ea4335; }
+.btn-other { background: #334155; }
+
+.app-btn {
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  height: 80px;
+}
+.app-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.app-btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+
+/* Spinner */
+.spinner {
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top: 3px solid #ffffff;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+</head>
+
+<body class="text-slate-100">
+
+<div class="min-h-screen flex items-center justify-center px-4 fade-in">
+<div class="w-full max-w-md">
+
+<div class="flex justify-between items-center mb-5 text-xs">
+  <div class="text-indigo-400">Order</div>
+  <div class="text-indigo-400 font-semibold">● Billing</div>
+  <div class="text-slate-400">Finish</div>
+</div>
+
+<div class="glass-card p-6 rounded-2xl space-y-6 shadow-xl">
+
+<h2 class="text-xl font-bold text-center">🧾 Order Summary</h2>
+
+<div class="space-y-3 text-sm border-b border-slate-700 pb-4">
+  <div class="flex justify-between">
+    <span class="text-slate-400">Shop</span>
+    <span id="shopName" class="text-indigo-300 font-bold text-right">Loading...</span>
+  </div>
+  <div class="flex justify-between">
+    <span class="text-slate-400">File Info</span>
+    <span id="fileInfo" class="text-right text-xs text-slate-300"></span>
+  </div>
+  <div class="flex justify-between">
+    <span class="text-slate-400">Total Cost</span>
+    <span id="amountDisplay" class="text-emerald-400 font-bold text-lg">₹0</span>
+  </div>
+</div>
+
+<div>
+  <p class="text-xs text-slate-400 mb-2">Select Payment App:</p>
+  <div class="grid grid-cols-2 gap-3" id="paymentGrid">
+    <button id="btnPhonePe" disabled class="app-btn btn-phonepe"><i class="fas fa-rupee-sign text-lg mb-1"></i>PhonePe</button>
+    <button id="btnPaytm" disabled class="app-btn btn-paytm"><i class="fas fa-wallet text-lg mb-1"></i>Paytm</button>
+    <button id="btnGPay" disabled class="app-btn btn-gpay"><i class="fab fa-google text-lg mb-1"></i>GPay</button>
+    <button id="btnOther" disabled class="app-btn btn-other"><i class="fas fa-qrcode text-lg mb-1"></i>Other UPI</button>
+  </div>
+  <p id="shopStatusMsg" class="text-xs text-center mt-2 text-orange-400">Fetching Shop UPI...</p>
+</div>
+
+<div class="text-xs text-slate-500 text-center bg-slate-900/50 p-2 rounded mt-2">
+  UPI ID: <span id="upiIdDisplay" class="select-all text-slate-300">...</span>
+</div>
+
+<form id="confirmForm" class="pt-4 space-y-3 border-t border-slate-700 mt-4">
+  <label class="text-sm font-semibold block">Upload Payment Screenshot</label>
+  <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-3 flex items-center gap-3">
+    <i class="fas fa-image text-indigo-400"></i>
+    <input type="file" id="screenshotInput" accept="image/*" required class="w-full text-sm bg-transparent outline-none text-slate-300"/>
+  </div>
+  <button type="submit" id="confirmBtn" class="w-full py-3 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20">
+    Confirm Order
+  </button>
+</form>
+
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+// --- 1. CONFIGURATION ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDFoM9lP2TFF0PqgGwtAFN8YoGSJznhujc",
+  authDomain: "printsmart-ebcdd.firebaseapp.com",
+  databaseURL: "https://printsmart-ebcdd-default-rtdb.firebaseio.com",
+  projectId: "printsmart-ebcdd"
+};
+
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dfdwbx1lk/auto/upload";
+const CLOUDINARY_UPLOAD_PRESET = "printsmart_unsigned"; 
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// --- 2. AUTH & DATA CHECK ---
+// ✅ FIX: Use the ID saved from Login Page
+let studentUID = localStorage.getItem("studentUID");
+if (!studentUID) {
+  alert("Session expired. Please login again.");
+  window.location.href = "index.html";
+}
+
+let orderData = JSON.parse(localStorage.getItem("printOrder"));
+if (!orderData) {
+  alert("No order found. Redirecting...");
+  window.location.href = "order-create.html";
+}
+
+// --- 3. PRICING LOGIC ---
+const RATE_BW = 2;    
+const RATE_COLOR = 10;
+const A3_MULTIPLIER = 2;
+
+let baseRate = orderData.printType === "color" ? RATE_COLOR : RATE_BW;
+if(orderData.pageSize === "A3") baseRate *= A3_MULTIPLIER;
+
+const totalCost = baseRate * orderData.detectedPages * orderData.copies;
+
+// UI Updates
+document.getElementById("fileInfo").innerHTML = `${orderData.fileName.substring(0,15)}...<br>${orderData.detectedPages} pgs x ${orderData.copies} cps (${orderData.printType})`;
+document.getElementById("amountDisplay").textContent = "₹" + totalCost;
+
+// --- 4. FETCH SHOP UPI ---
+const shopNameDisplay = document.getElementById("shopName");
+const upiIdDisplay = document.getElementById("upiIdDisplay");
+const statusMsg = document.getElementById("shopStatusMsg");
+const btns = [document.getElementById("btnPhonePe"), document.getElementById("btnPaytm"), document.getElementById("btnGPay"), document.getElementById("btnOther")];
+
+const shopRef = ref(db, `shops/${orderData.shopId}`);
+
+get(shopRef).then((snapshot) => {
+  if (snapshot.exists()) {
+    const shopData = snapshot.val();
+    shopNameDisplay.textContent = shopData.name;
+    
+    if (shopData.upi) {
+      upiIdDisplay.textContent = shopData.upi;
+      statusMsg.style.display = 'none'; 
+      btns.forEach(btn => btn.disabled = false);
+
+      const baseParams = `pa=${shopData.upi}&pn=${encodeURIComponent(shopData.name)}&am=${totalCost}&cu=INR&tn=PrintSmart`;
+      
+      document.getElementById("btnPhonePe").onclick = () => window.location.href = `phonepe://pay?${baseParams}`;
+      document.getElementById("btnPaytm").onclick = () => window.location.href = `paytmmp://pay?${baseParams}`;
+      document.getElementById("btnGPay").onclick = () => window.location.href = `tez://upi/pay?${baseParams}`;
+      document.getElementById("btnOther").onclick = () => window.location.href = `upi://pay?${baseParams}`;
+    } else {
+      statusMsg.textContent = "Shop UPI Not Configured";
+    }
+  } else {
+    shopNameDisplay.textContent = "Shop Not Found";
+  }
+}).catch((err) => {
+  console.error(err);
+  statusMsg.textContent = "Network Error";
+});
+
+// --- 5. UPLOAD & CONFIRM ---
+const confirmForm = document.getElementById("confirmForm");
+const confirmBtn = document.getElementById("confirmBtn");
+const screenshotInput = document.getElementById("screenshotInput");
+
+confirmForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const file = screenshotInput.files[0];
+  if(!file) return;
+
+  const originalText = confirmBtn.innerText;
+  confirmBtn.disabled = true;
+  confirmBtn.innerHTML = `<div class="spinner"></div> Verifying...`;
+
+  try {
+    // 1. Upload to Cloudinary
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    const res = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+    const data = await res.json();
+    
+    if(data.error) throw new Error(data.error.message);
+
+    // 2. Prepare Order Object
+    const finalOrder = {
+      ...orderData, 
+      totalCost: totalCost,
+      screenshotUrl: data.secure_url,
+      status: "pending_approval", 
+      timestamp: Date.now(),
+      paymentMethod: "UPI",
+      userRef: studentUID // ✅ Now matches the Login ID!
+    };
+
+    // 3. Save to Firebase
+    const newOrderRef = push(ref(db, 'orders'));
+    await set(newOrderRef, finalOrder);
+
+    alert("Order Placed Successfully!");
+    localStorage.removeItem("printOrder"); 
+    window.location.href = "dashboard.html"; 
+
+  } catch (error) {
+    console.error("Full Error:", error);
+    alert("Error: " + error.message);
+    confirmBtn.disabled = false;
+    confirmBtn.innerText = originalText;
+  }
+});
+</script>
+</body>
+</html>

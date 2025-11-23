@@ -1,39 +1,157 @@
-# PrintSmart - College Print Order & Pickup System
+# PrintSmart - Smart Printing Order & Pickup System
 
-PrintSmart is a simple print ordering platform for students and local shop owners. Students can submit print requests, and shop owners manage them efficiently.
+A complete web-based system for managing print orders and pickups with separate interfaces for students and shop owners.
 
-## 🔧 Features
+## Features
 
-### For Students:
-- Login/signup with email and password
-- Submit print requests with:
-  - Number of copies
-  - Print type (B/W, Color)
-  - Print size (A4/A3)
-  - File download URL (Google Drive/File.io)
-- Orders go to a selected shop
-- Get notified when the order is printed
+### Student Interface
+- **Landing Page**: Browse features and get started
+- **Authentication**: Secure login and signup
+- **Dashboard**: View order statistics and recent orders
+- **Order Creation**: Upload files, select print options, and place orders
+- **Order Tracking**: Monitor order status from pending to completion
+- **Account Management**: Update profile and preferences
 
-### For Shop Owners:
-- Register and log in with unique shop name
-- View incoming orders for your shop
-- Mark orders as "Printed"
-- Sorted order queue (First Come First Serve)
+### Shop Owner Interface
+- **Dashboard**: Overview of pending, processing, and ready orders
+- **Order Management**: View all orders with search and filter capabilities
+- **Status Updates**: Change order status through the workflow
+- **Analytics**: View business metrics and charts
+- **Real-time Stats**: Track revenue, completion rates, and order distribution
 
-## 🚀 Tech Stack
-- HTML, CSS, JavaScript (Vanilla)
-- Firebase Authentication
-- localStorage (no database)
+## Technology Stack
 
-## 🔐 Login Credentials
-- Separate login for Student and Shop Owner
+- **Frontend**: HTML5, Tailwind CSS, vanilla JavaScript
+- **Storage**: Browser LocalStorage
+- **Icons**: Font Awesome 6.4
+- **Charts**: Chart.js 3.9
+- **Color Scheme**: Modern dark theme with indigo/purple accents
 
-## 🛠 How to Run
-1. Clone the repo or download as ZIP
-2. Add your `firebase-config.js` with Firebase Auth config
-3. Open `login.html` and start using
+## File Structure
 
-## 🎯 Future Scope
-- Add Firebase Realtime DB or Firestore
-- Add email notifications
-- Admin dashboard with analytics
+\`\`\`
+├── index.html                 # Main landing page
+├── students/
+│   ├── index.html            # Student landing page
+│   ├── login.html            # Student login
+│   ├── signup.html           # Student signup
+│   ├── dashboard.html        # Student dashboard
+│   ├── order-create.html     # Create new order
+└── shop/
+    ├── index.html            # Shop login
+    ├── dashboard.html        # Shop dashboard
+\`\`\`
+
+## Getting Started
+
+1. **Open the Landing Page**: Start at `index.html`
+2. **Choose Your Role**:
+   - Students: Click "Student Portal" to access the student interface
+   - Shop Owners: Click "Shop Portal" to access the shop interface
+
+## Demo Credentials
+
+### Student Account
+- Email: student@example.com
+- Password: password123
+
+### Shop Account
+- Shop Name: Shop
+- Password: password
+
+## Key Features
+
+### Order Lifecycle
+1. Student creates order with files and options
+2. Shop owner receives order notification
+3. Owner moves order through workflow (Pending → Processing → Ready)
+4. Student picks up completed order
+5. Order marked as completed
+
+### Pricing System
+- Black & White: $0.10 per page
+- Color: $0.30 per page
+- Binding options available (Stapled, Spiral)
+
+### Real-time Analytics
+- Order status distribution charts
+- Color mode usage analytics
+- Revenue tracking
+- Completion rate monitoring
+
+## Utilities & Functions
+
+### Auth Module
+- User authentication
+- Session management
+- Logout functionality
+
+### Orders Module
+- Create, read, update orders
+- Filter by status and user
+- Calculate order statistics
+
+### Pricing Module
+- Dynamic price calculation
+- Support for multiple options
+- Currency formatting
+
+### UI Module
+- Notifications system
+- Modal dialogs
+- Data formatting utilities
+
+## Browser Compatibility
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Data Storage
+
+All data is stored locally using browser LocalStorage. Data persists across browser sessions.
+
+**Note**: Data is cleared when browser cache is cleared.
+
+## Customization
+
+### Colors
+Edit `shared/styles.css` to customize the color scheme:
+- Primary color: `--color-primary`
+- Secondary color: `--color-secondary`
+- Accent colors for status badges
+
+### Pricing
+Update the pricing rates in `shared/utils.js`:
+\`\`\`javascript
+Pricing.rates = {
+  bw: 0.10,
+  color: 0.30,
+  binding_stapled: 0.50,
+  binding_spiral: 1.50
+}
+\`\`\`
+
+### Status Badges
+Customize status badge colors in `shared/styles.css`
+
+## Future Enhancements
+
+- Backend API integration
+- Payment gateway integration
+- Email notifications
+- SMS alerts
+- Inventory management
+- Printing history reports
+- Advanced search filters
+- Multi-language support
+- Mobile app
+
+## Support
+
+For issues or feature requests, please contact support@printsmart.com
+
+---
+
+Made with by the PrintSmart Team

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Create Order - PrintSmart</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+body {
+  background: linear-gradient(to bottom, #1e1b4b 0%, #020617 40%, #000000 100%);
+  background-attachment: fixed;
+}
+
+.glass-card{
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.glow-btn{
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  transition: all 0.3s ease;
+}
+
+.glow-btn:hover{
+  box-shadow: 0 0 25px rgba(99,102,241,0.6);
+  transform: translateY(-2px);
+}
+
+.glow-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Entrance Animation */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Spinner */
+.spinner {
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top: 3px solid #ffffff;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+
+<body class="text-slate-100">
+
+<div class="min-h-screen flex items-center justify-center px-4 fade-in">
+<div class="w-full max-w-md">
+
+<div class="flex justify-between items-center mb-5 text-xs">
+  <div class="text-indigo-400 font-semibold">● Order</div>
+  <div class="text-slate-400">— Billing —</div>
+  <div class="text-slate-400">Payment</div>
+</div>
+
+<div class="flex items-center justify-between mb-4">
+  <button onclick="window.location.href='dashboard.html'"
+    class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+  <h1 class="text-lg font-semibold">Create Order</h1>
+</div>
+
+<div class="glass-card rounded-2xl p-5 space-y-4 shadow-xl">
+
+<form id="orderForm" class="space-y-5">
+
+<div>
+  <label class="text-sm font-semibold">Upload Document (PDF/DOCX)</label>
+  <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-3 flex items-center gap-3 relative">
+    <i class="fas fa-upload text-indigo-400"></i>
+    <input type="file" id="fileInput" accept=".pdf, .docx, .doc" required class="w-full text-sm bg-transparent outline-none text-slate-300"/>
+  </div>
+
+  <div id="filePreview" class="hidden mt-2 flex justify-between items-center">
+      <div class="px-3 py-1 bg-indigo-500/10 border border-indigo-500/40 rounded-full text-xs text-indigo-300 flex items-center gap-2">
+        <i class="fas fa-file"></i>
+        <span id="fileNameText"></span>
+      </div>
+      <div id="pageCountBadge" class="hidden px-3 py-1 bg-emerald-500/10 border border-emerald-500/40 rounded-full text-xs text-emerald-300">
+         <span id="pageCountText">Calculating...</span>
+      </div>
+  </div>
+  <p id="uploadError" class="text-red-400 text-xs mt-1 hidden"></p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+  <div>
+    <label class="text-sm">Copies</label>
+    <input type="number" id="copies" min="1" value="1"
+      class="w-full bg-slate-900 p-2 rounded-lg border border-slate-700"/>
+  </div>
+  <div>
+    <label class="text-sm">Print Type</label>
+    <select id="printType" class="w-full bg-slate-900 p-2 rounded-lg border border-slate-700">
+      <option value="bw">Black & White</option>
+      <option value="color">Color</option>
+    </select>
+  </div>
+  <div>
+    <label class="text-sm">Page Size</label>
+    <select id="pageSize" class="w-full bg-slate-900 p-2 rounded-lg border border-slate-700">
+      <option value="A4">A4</option>
+      <option value="A3">A3</option>
+    </select>
+  </div>
+</div>
+
+<div>
+<label class="text-sm font-semibold">Select City</label>
+<select id="citySelect" class="w-full bg-slate-900 p-2 rounded-lg border border-slate-700">
+<option value="">Choose City</option>
+<option value="Delhi">Delhi</option>
+<option value="Noida">Noida</option>
+<option value="Greater Noida">Greater Noida</option>
+</select>
+</div>
+
+<div>
+<label class="text-sm font-semibold">Select Shop</label>
+<select id="shopSelect" required class="w-full bg-slate-900 p-2 rounded-lg border border-slate-700">
+<option value="">Select city first</option>
+</select>
+</div>
+
+<button type="submit" id="submitBtn" class="glow-btn w-full py-2.5 rounded-xl font-semibold flex justify-center items-center gap-2">
+  <span>Proceed to Billing</span> 
+  <i class="fas fa-arrow-right"></i>
+</button>
+
+</form>
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+// --- 1. CONFIGURATION ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDFoM9lP2TFF0PqgGwtAFN8YoGSJznhujc",
+  authDomain: "printsmart-ebcdd.firebaseapp.com",
+  databaseURL: "https://printsmart-ebcdd-default-rtdb.firebaseio.com",
+  projectId: "printsmart-ebcdd"
+};
+
+// REPLACE THESE WITH YOUR CLOUDINARY DETAILS
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dfdwbx1lk/auto/upload";
+const CLOUDINARY_UPLOAD_PRESET = "printsmart_unsigned"; 
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Initialize PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// --- 2. DOM ELEMENTS ---
+const citySelect = document.getElementById("citySelect");
+const shopSelect = document.getElementById("shopSelect");
+const fileInput = document.getElementById("fileInput");
+const filePreview = document.getElementById("filePreview");
+const fileNameText = document.getElementById("fileNameText");
+const pageCountBadge = document.getElementById("pageCountBadge");
+const pageCountText = document.getElementById("pageCountText");
+const orderForm = document.getElementById("orderForm");
+const submitBtn = document.getElementById("submitBtn");
+
+let allShops = {};
+let detectedPageCount = 0;
+let selectedFile = null;
+
+// --- 3. FIREBASE SHOPS LOGIC ---
+onValue(ref(db, "shops"), snapshot => {
+  allShops = snapshot.val() || {};
+});
+
+citySelect.addEventListener("change", () => {
+  const selectedCity = citySelect.value;
+  shopSelect.innerHTML = '<option value="">Select shop</option>';
+  
+  Object.keys(allShops).forEach(shopId => {
+    const shop = allShops[shopId];
+    if(shop.city === selectedCity && shop.approved === true){
+      const option = document.createElement("option");
+      option.value = shopId;
+      option.textContent = shop.name;
+      shopSelect.appendChild(option);
+    }
+  });
+});
+
+// --- 4. FILE HANDLING & PAGE COUNTING ---
+fileInput.addEventListener("change", async (e) => {
+    selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    // UI Update
+    filePreview.classList.remove("hidden");
+    fileNameText.textContent = selectedFile.name.length > 20 ? selectedFile.name.substring(0,20)+'...' : selectedFile.name;
+    pageCountBadge.classList.remove("hidden");
+    pageCountText.textContent = "Scanning...";
+    detectedPageCount = 0;
+
+    try {
+        if (selectedFile.type === "application/pdf") {
+            detectedPageCount = await countPdfPages(selectedFile);
+        } else if (selectedFile.name.endsWith(".docx")) {
+            detectedPageCount = await countDocxPages(selectedFile);
+        } else {
+            pageCountText.textContent = "Manual Count";
+            detectedPageCount = 1; // Default fallback
+        }
+        
+        pageCountText.textContent = `${detectedPageCount} Pages`;
+    } catch (error) {
+        console.error("Error counting pages:", error);
+        pageCountText.textContent = "Count Failed";
+        detectedPageCount = 1; // Fallback
+    }
+});
+
+async function countPdfPages(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    return pdf.numPages;
+}
+
+async function countDocxPages(file) {
+    // Logic: Unzip DOCX, find docProps/app.xml, extract <Pages> tag
+    try {
+        const zip = await JSZip.loadAsync(file);
+        const appXml = await zip.file("docProps/app.xml").async("string");
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(appXml, "text/xml");
+        const pages = xmlDoc.getElementsByTagName("Pages")[0].textContent;
+        return parseInt(pages) || 1; 
+    } catch (e) {
+        console.log("Could not read DOCX metadata, estimating...");
+        return 1; // Fallback
+    }
+}
+
+// --- 5. CLOUDINARY UPLOAD & FORM SUBMISSION ---
+orderForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!selectedFile || !shopSelect.value) {
+        alert("Please select a file and a shop.");
+        return;
+    }
+
+    // 1. Show Loading State
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<div class="spinner"></div> Uploading...`;
+
+    try {
+        // 2. Upload to Cloudinary
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(CLOUDINARY_URL, {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("Upload failed");
+        const data = await response.json();
+        const fileUrl = data.secure_url;
+
+        // 3. Gather Data
+        const orderData = {
+            fileUrl: fileUrl,
+            fileName: selectedFile.name,
+            fileType: selectedFile.type,
+            detectedPages: detectedPageCount,
+            copies: document.getElementById("copies").value,
+            printType: document.getElementById("printType").value, // color or bw
+            pageSize: document.getElementById("pageSize").value,
+            shopId: shopSelect.value,
+            shopName: shopSelect.options[shopSelect.selectedIndex].text,
+            city: citySelect.value,
+            totalPrintPages: detectedPageCount * document.getElementById("copies").value
+        };
+
+        // 4. Save to LocalStorage for Billing Page
+        localStorage.setItem("printOrder", JSON.stringify(orderData));
+
+        // 5. Redirect
+        window.location.href = "billing.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("Upload Failed: " + error.message);
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+    }
+});
+
+</script>
+
+</body>
+</html>
