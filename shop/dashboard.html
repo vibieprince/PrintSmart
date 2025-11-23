@@ -109,7 +109,7 @@
   const currentShopName = localStorage.getItem('shopName');
 
   if (!currentShopId) {
-    window.location.href = "index.html"; 
+    window.location.href = "shop/index.html"; 
   }
 
   document.getElementById('shopNameTop').textContent = currentShopName || 'Dashboard';
@@ -318,7 +318,7 @@
 function logout() {
   localStorage.removeItem('shopId');
   localStorage.removeItem('shopName');
-  window.location.href = 'index.html';
+  window.location.href = 'shop/index.html';
 }
 </script>
 

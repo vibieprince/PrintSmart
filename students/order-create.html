@@ -77,7 +77,7 @@ body {
 </div>
 
 <div class="flex items-center justify-between mb-4">
-  <button onclick="window.location.href='dashboard.html'"
+  <button onclick="window.location.href='/shop/dashboard.html'"
     class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
     <i class="fas fa-arrow-left"></i> Back
   </button>
@@ -168,7 +168,6 @@ const firebaseConfig = {
   projectId: "printsmart-ebcdd"
 };
 
-// REPLACE THESE WITH YOUR CLOUDINARY DETAILS
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dfdwbx1lk/auto/upload";
 const CLOUDINARY_UPLOAD_PRESET = "printsmart_unsigned"; 
 
@@ -232,14 +231,14 @@ fileInput.addEventListener("change", async (e) => {
             detectedPageCount = await countDocxPages(selectedFile);
         } else {
             pageCountText.textContent = "Manual Count";
-            detectedPageCount = 1; // Default fallback
+            detectedPageCount = 1; 
         }
         
         pageCountText.textContent = `${detectedPageCount} Pages`;
     } catch (error) {
         console.error("Error counting pages:", error);
         pageCountText.textContent = "Count Failed";
-        detectedPageCount = 1; // Fallback
+        detectedPageCount = 1; 
     }
 });
 
@@ -250,7 +249,6 @@ async function countPdfPages(file) {
 }
 
 async function countDocxPages(file) {
-    // Logic: Unzip DOCX, find docProps/app.xml, extract <Pages> tag
     try {
         const zip = await JSZip.loadAsync(file);
         const appXml = await zip.file("docProps/app.xml").async("string");
@@ -259,8 +257,7 @@ async function countDocxPages(file) {
         const pages = xmlDoc.getElementsByTagName("Pages")[0].textContent;
         return parseInt(pages) || 1; 
     } catch (e) {
-        console.log("Could not read DOCX metadata, estimating...");
-        return 1; // Fallback
+        return 1; 
     }
 }
 
@@ -276,31 +273,38 @@ orderForm.addEventListener("submit", async (e) => {
     // 1. Show Loading State
     const originalBtnText = submitBtn.innerHTML;
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<div class="spinner"></div> Uploading...`;
+    submitBtn.innerHTML = `<div class="spinner"></div> Uploading File...`;
 
     try {
         // 2. Upload to Cloudinary
+        console.log("Starting Upload...");
         const formData = new FormData();
         formData.append("file", selectedFile);
         formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
+        
+        // This 'auto' resource type usually handles PDFs well, but if it fails, try 'raw'
         const response = await fetch(CLOUDINARY_URL, {
             method: "POST",
             body: formData
         });
 
-        if (!response.ok) throw new Error("Upload failed");
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error.message || "Upload Failed");
+        }
+
         const data = await response.json();
         const fileUrl = data.secure_url;
+        console.log("File Uploaded:", fileUrl);
 
         // 3. Gather Data
         const orderData = {
-            fileUrl: fileUrl,
+            fileUrl: fileUrl, // ✅ THE CRITICAL LINK FOR THE SHOP
             fileName: selectedFile.name,
             fileType: selectedFile.type,
             detectedPages: detectedPageCount,
             copies: document.getElementById("copies").value,
-            printType: document.getElementById("printType").value, // color or bw
+            printType: document.getElementById("printType").value,
             pageSize: document.getElementById("pageSize").value,
             shopId: shopSelect.value,
             shopName: shopSelect.options[shopSelect.selectedIndex].text,
@@ -311,8 +315,8 @@ orderForm.addEventListener("submit", async (e) => {
         // 4. Save to LocalStorage for Billing Page
         localStorage.setItem("printOrder", JSON.stringify(orderData));
 
-        // 5. Redirect
-        window.location.href = "billing.html";
+        // 5. ✅ FIX 2: Correct Relative Path
+        window.location.href = "/students/billing.html";
 
     } catch (error) {
         console.error(error);

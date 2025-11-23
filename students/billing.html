@@ -135,13 +135,13 @@ const db = getDatabase(app);
 let studentUID = localStorage.getItem("studentUID");
 if (!studentUID) {
   alert("Session expired. Please login again.");
-  window.location.href = "index.html";
+  window.location.href = "/students/index.html";
 }
 
 let orderData = JSON.parse(localStorage.getItem("printOrder"));
 if (!orderData) {
   alert("No order found. Redirecting...");
-  window.location.href = "order-create.html";
+  window.location.href = "/students/order-create.html";
 }
 
 // --- 3. PRICING LOGIC ---
@@ -235,7 +235,7 @@ confirmForm.addEventListener("submit", async (e) => {
 
     alert("Order Placed Successfully!");
     localStorage.removeItem("printOrder"); 
-    window.location.href = "dashboard.html"; 
+    window.location.href = "/students/dashboard.html"; 
 
   } catch (error) {
     console.error("Full Error:", error);
